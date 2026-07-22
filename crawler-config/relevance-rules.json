@@ -1,0 +1,45 @@
+{
+  "relevance_scoring": {
+    "min_score_to_include": 0.7,
+    "scoring_rules": [
+      {
+        "rule": "Published in last 5 years",
+        "weight": 0.25,
+        "boost": true
+      },
+      {
+        "rule": "Peer-reviewed journal",
+        "weight": 0.30,
+        "required": true
+      },
+      {
+        "rule": "Human clinical trial",
+        "weight": 0.25,
+        "boost": true
+      },
+      {
+        "rule": "Meta-analysis or systematic review",
+        "weight": 0.20,
+        "boost": true
+      }
+    ]
+  },
+  "journal_tier": {
+    "tier_1_impact_factor": 5.0,
+    "tier_2_impact_factor": 2.0,
+    "included_journals": [
+      "The New England Journal of Medicine",
+      "JAMA",
+      "The Lancet",
+      "Obesity",
+      "Diabetes Care",
+      "International Journal of Obesity",
+      "BMJ"
+    ]
+  },
+  "content_filters": {
+    "minimum_sample_size": 30,
+    "exclude_languages": [],
+    "include_languages": ["English"]
+  }
+}
