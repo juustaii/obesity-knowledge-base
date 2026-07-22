@@ -1,0 +1,48 @@
+name: Obesity Crawler - Scheduled Runs
+
+on:
+  schedule:
+    # Run crawler every 7 days (Sunday at 2 AM UTC)
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+    # Allow manual trigger
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r backend/requirements.txt
+    
+    - name: Run crawler
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        python backend/scripts/run_crawler.py
+    
+    - name: Commit new materials
+      if: success()
+      run: |
+        git config --local user.email "crawler@obesity-kb.dev"
+        git config --local user.name "Obesity Crawler Bot"
+        git add -A
+        git commit -m "[AUTO] Crawler discovered new obesity resources" || echo "No changes to commit"
+        git push
+    
+    - name: Update crawler log
+      run: |
+        echo "Last run: $(date -u)" >> CRAWLER_LOG.md
+        git add CRAWLER_LOG.md
+        git commit -m "[AUTO] Update crawler activity log" || true
+        git push || true
